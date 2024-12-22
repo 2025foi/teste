@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roleta de Prêmios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
+        .roleta-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        .roleta {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid #333;
+            background: conic-gradient(
+                #FFCC00 0deg, #FFCC00 72deg,
+                #FF9900 72deg, #FF9900 144deg,
+                #FF6600 144deg, #FF6600 216deg,
+                #FF3300 216deg, #FF3300 288deg,
+                #FF0000 288deg, #FF0000 360deg
+            );
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .roleta span {
+            position: absolute;
+            transform-origin: 50% 150%;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 20px solid #333;
+        }
+
+        .btn-spin {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-spin:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="roleta-container">
+        <div class="roleta" id="roleta">
+            <span style="transform: rotate(36deg);">10% OFF</span>
+            <span style="transform: rotate(108deg);">20% OFF</span>
+            <span style="transform: rotate(180deg);">50% OFF</span>
+            <span style="transform: rotate(252deg);">1 POTE GRÁTIS</span>
+            <span style="transform: rotate(324deg);">FRETE GRÁTIS</span>
+        </div>
+        <div class="pointer"></div>
+    </div>
+    <button class="btn-spin" id="spinButton">Girar</button>
+
+    <script>
+        const roleta = document.getElementById("roleta");
+        const spinButton = document.getElementById("spinButton");
+
+        const premios = ["10% OFF", "20% OFF", "50% OFF", "1 POTE GRÁTIS", "FRETE GRÁTIS"];
+
+        spinButton.addEventListener("click", () => {
+            const anguloInicial = Math.floor(Math.random() * 360);
+            const rotacoes = 5 * 360; // 5 rotações completas
+            const anguloFinal = rotacoes + anguloInicial;
+
+            roleta.style.transition = "transform 3s ease-out";
+            roleta.style.transform = `rotate(${anguloFinal}deg)`;
+
+            spinButton.disabled = true;
+
+            setTimeout(() => {
+                const anguloParado = anguloFinal % 360;
+                const indexPremio = Math.floor(anguloParado / (360 / premios.length));
+                const premio = premios[indexPremio];
+
+                alert(`Parabéns! Você ganhou: ${premio}`);
+                spinButton.disabled = false;
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
+
+<!-- Instruções para Repositório -->
+<!-- 
+README.md: Inclua um README que descreva o propósito da roleta, como usá-la e instruções para hospedagem.
+LICENSE: Adicione uma licença apropriada (ex.: MIT License) para especificar os direitos de uso.
+.gitignore: Configure para ignorar arquivos desnecessários, como backups locais ou configurações do editor.
+-->
