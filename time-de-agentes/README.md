@@ -34,6 +34,8 @@ Os 5 especialistas recebem suas skills pré-carregadas (campo `skills:`). O Gere
 
 ## 📺 Painel do Time (ver os agentes trabalhando)
 
+![Painel do Time](painel-exemplo.png)
+
 O instalador cria o atalho **"Painel do Time"** na Área de Trabalho (no Windows). Ele abre no navegador uma tela com **6 quadrados**, um por agente:
 
 - 👔 o Gerente em cima, e os 5 especialistas embaixo
