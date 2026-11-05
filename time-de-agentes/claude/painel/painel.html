@@ -41,6 +41,7 @@
   .status.trabalhando::before { animation: pisca 1s infinite; }
   .status.concluido { color: var(--azul); background: rgba(90,169,255,.1); }
   .status.aguardando { color: var(--amarelo); background: rgba(245,196,81,.1); }
+  .status.acompanhando { color: var(--verde); background: rgba(61,220,132,.06); }
   .agora { margin: 14px 0 10px; padding: 10px 12px; background: var(--cartao2); border-radius: 10px; font-size: 14px; min-height: 44px; }
   .agora .rot { color: var(--suave); font-size: 11.5px; text-transform: uppercase; letter-spacing: .6px; display: block; margin-bottom: 2px; }
   .agora .proj { color: var(--suave); font-size: 12px; }
@@ -106,7 +107,7 @@ const TIME = [
   { id: "copy-conteudo",    nome: "Copy & Conteúdo",  emoji: "✍️", papel: "Textos e landing pages" },
 ];
 const NOMES = Object.fromEntries(TIME.map(a => [a.id, a.nome]));
-const ROTULO = { livre: "Livre", trabalhando: "Trabalhando", concluido: "Concluiu", aguardando: "Esperando você" };
+const ROTULO = { livre: "Livre", trabalhando: "Trabalhando", concluido: "Concluiu", aguardando: "Esperando você", acompanhando: "Acompanhando o time" };
 
 let buffer = [], eventos = [], aberto = null, ultimaLeitura = 0, falhas = 0;
 window.E = ev => buffer.push(ev);
@@ -115,10 +116,13 @@ function nomeArquivo(p) { return (p || "").split(/[\\/]/).filter(Boolean).pop() 
 function hora(t) { return new Date(t).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }); }
 function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
 
+function interno(ev) { return /^\s*<(agent-message|task-notification)/.test(ev.msg || ""); }
+
 function descrever(ev) {
   const d = ev.det || "";
   switch (ev.ev) {
-    case "UserPromptSubmit": return "📩 Recebeu seu pedido: " + (ev.msg || "");
+    case "UserPromptSubmit":
+      return interno(ev) ? "📥 Recebeu a entrega de um funcionário" : "📩 Recebeu seu pedido: " + (ev.msg || "");
     case "SubagentStart":    return "▶️ Começou a trabalhar";
     case "SubagentStop":     return "✅ Entregou o trabalho ao Gerente";
     case "Stop":             return "📋 Respondeu para você";
@@ -156,7 +160,7 @@ function montarEstado() {
     const a = est[e.ag]; if (!a) continue;
     if (e.cwd) a.projeto = nomeArquivo(e.cwd);
     if (e.ev === "SubagentStart") { a.status = "trabalhando"; a.tarefas++; }
-    else if (e.ev === "UserPromptSubmit") { a.status = "trabalhando"; a.tarefas++; }
+    else if (e.ev === "UserPromptSubmit") { a.status = "trabalhando"; if (!interno(e)) a.tarefas++; }
     else if (e.ev === "PreToolUse") a.status = "trabalhando";
     else if (e.ev === "SubagentStop") { a.status = "concluido"; a.resultado = { t: e.t, msg: e.msg }; }
     else if (e.ev === "Stop") { a.status = e.ag === "gerente" ? "aguardando" : "concluido"; a.resultado = { t: e.t, msg: e.msg }; }
@@ -167,6 +171,8 @@ function montarEstado() {
     const a = est[id];
     if (a.status === "trabalhando" && a.ultimo && Date.now() - a.ultimo.t > 15 * 60 * 1000) a.status = "livre";
   }
+  const algumTrabalhando = TIME.slice(1).some(x => est[x.id].status === "trabalhando");
+  if (algumTrabalhando && est.gerente.status !== "trabalhando") est.gerente.status = "acompanhando";
   return { est, total: lista.length };
 }
 
