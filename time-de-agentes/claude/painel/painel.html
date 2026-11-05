@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel do Time</title>
+<style>
+  :root {
+    --fundo: #0f1218; --cartao: #171c25; --cartao2: #1d2330; --borda: #2a3242;
+    --texto: #e7eaf0; --suave: #8b95a7; --verde: #3ddc84; --amarelo: #f5c451;
+    --azul: #5aa9ff; --cinza: #5b6474;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--texto);
+         font: 15px/1.45 "Segoe UI", system-ui, -apple-system, sans-serif; }
+  header { display: flex; align-items: center; justify-content: space-between;
+           padding: 18px 28px; border-bottom: 1px solid var(--borda); }
+  header h1 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: .2px; }
+  header .info { color: var(--suave); font-size: 13px; display: flex; gap: 18px; align-items: center; }
+  .vivo { display: inline-flex; align-items: center; gap: 7px; }
+  .vivo i { width: 8px; height: 8px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 0 0 rgba(61,220,132,.6); animation: pulso 2s infinite; }
+  .vivo.off i { background: var(--cinza); animation: none; }
+  main { padding: 24px 28px 40px; max-width: 1500px; margin: 0 auto; }
+  .topo { display: flex; justify-content: center; margin-bottom: 14px; }
+  .topo .card { width: min(560px, 100%); }
+  .ligacao { height: 22px; margin: 0 auto 14px; width: 2px; background: var(--borda); }
+  .grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+  .card { background: var(--cartao); border: 1px solid var(--borda); border-radius: 14px; padding: 16px 16px 12px;
+          cursor: pointer; transition: border-color .2s, transform .15s; display: flex; flex-direction: column; min-height: 250px; }
+  .card:hover { transform: translateY(-2px); border-color: #3b465c; }
+  .card.trabalhando { border-color: rgba(61,220,132,.55); box-shadow: 0 0 0 1px rgba(61,220,132,.15), 0 6px 24px rgba(61,220,132,.08); }
+  .cab { display: flex; align-items: center; gap: 12px; }
+  .avatar { width: 42px; height: 42px; border-radius: 11px; display: grid; place-items: center; font-size: 22px; background: var(--cartao2); flex: none; }
+  .nome { font-weight: 650; font-size: 16px; }
+  .papel { color: var(--suave); font-size: 12.5px; }
+  .status { font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 99px; white-space: nowrap;
+            display: inline-flex; align-items: center; gap: 6px; background: #232a37; color: var(--suave); margin-top: 4px; }
+  .papel-linha { color: var(--suave); font-size: 12.5px; margin-top: 10px; }
+  .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .status.trabalhando { color: var(--verde); background: rgba(61,220,132,.1); }
+  .status.trabalhando::before { animation: pisca 1s infinite; }
+  .status.concluido { color: var(--azul); background: rgba(90,169,255,.1); }
+  .status.aguardando { color: var(--amarelo); background: rgba(245,196,81,.1); }
+  .agora { margin: 14px 0 10px; padding: 10px 12px; background: var(--cartao2); border-radius: 10px; font-size: 14px; min-height: 44px; }
+  .agora .rot { color: var(--suave); font-size: 11.5px; text-transform: uppercase; letter-spacing: .6px; display: block; margin-bottom: 2px; }
+  .agora .proj { color: var(--suave); font-size: 12px; }
+  ul.hist { list-style: none; margin: 0; padding: 0; font-size: 12.5px; color: var(--suave); flex: 1; }
+  ul.hist li { display: flex; gap: 8px; padding: 3px 0; border-top: 1px dashed #232a37; overflow: hidden; }
+  ul.hist li span.h { flex: none; width: 40px; color: #6b7588; }
+  ul.hist li span.d { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rodape { color: #6b7588; font-size: 12px; margin-top: 8px; display: flex; justify-content: space-between; }
+  .vazio { text-align: center; color: var(--suave); padding: 50px 20px; border: 1px dashed var(--borda); border-radius: 14px; margin-bottom: 20px; }
+  .vazio b { color: var(--texto); }
+  code { background: #232a37; padding: 2px 6px; border-radius: 5px; font-size: 13px; }
+  /* Janela de detalhes */
+  .modal { position: fixed; inset: 0; background: rgba(5,7,10,.7); display: none; align-items: center; justify-content: center; padding: 24px; z-index: 10; }
+  .modal.aberto { display: flex; }
+  .caixa { background: var(--cartao); border: 1px solid var(--borda); border-radius: 16px; width: min(860px, 100%); max-height: 88vh; display: flex; flex-direction: column; }
+  .caixa header { padding: 16px 20px; }
+  .caixa .corpo { padding: 16px 20px 22px; overflow: auto; }
+  .caixa h3 { margin: 18px 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: .6px; color: var(--suave); }
+  .msg { white-space: pre-wrap; background: var(--cartao2); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  td { padding: 6px 8px; border-top: 1px solid #232a37; vertical-align: top; }
+  td.h { color: #6b7588; white-space: nowrap; width: 70px; }
+  td.p { color: var(--suave); white-space: nowrap; }
+  button.fechar { background: #232a37; color: var(--texto); border: 0; border-radius: 8px; padding: 7px 14px; cursor: pointer; font: inherit; }
+  @keyframes pulso { 0% { box-shadow: 0 0 0 0 rgba(61,220,132,.6); } 70% { box-shadow: 0 0 0 8px rgba(61,220,132,0); } 100% { box-shadow: 0 0 0 0 rgba(61,220,132,0); } }
+  @keyframes pisca { 50% { opacity: .25; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>🏢 Painel do Time</h1>
+  <div class="info">
+    <span id="resumo"></span>
+    <span class="vivo" id="vivo"><i></i><span id="atualizado">conectando…</span></span>
+  </div>
+</header>
+
+<main>
+  <div class="vazio" id="vazio" hidden>
+    <b>Nenhuma atividade ainda.</b><br><br>
+    Abra o PowerShell na pasta de um projeto, rode <code>claude --agent gerente</code> e faça um pedido.<br>
+    Os cartões abaixo se atualizam sozinhos enquanto o time trabalha.
+  </div>
+  <div class="topo" id="topo"></div>
+  <div class="ligacao"></div>
+  <div class="grade" id="grade"></div>
+</main>
+
+<div class="modal" id="modal" onclick="if(event.target===this)fechar()">
+  <div class="caixa">
+    <header><div class="cab" id="mcab" style="flex:1"></div><button class="fechar" onclick="fechar()">Fechar</button></header>
+    <div class="corpo" id="mcorpo"></div>
+  </div>
+</div>
+
+<script>
+const TIME = [
+  { id: "gerente",          nome: "Gerente",          emoji: "👔", papel: "Coordena o time e aprova tudo" },
+  { id: "arquiteto",        nome: "Arquiteto",        emoji: "📐", papel: "Planeja estrutura, dados e APIs" },
+  { id: "programador",      nome: "Programador",      emoji: "💻", papel: "Constrói o código" },
+  { id: "revisor-tecnico",  nome: "Revisor Técnico",  emoji: "🔍", papel: "Revisa e dá o veredito" },
+  { id: "marketing-scout",  nome: "Marketing Scout",  emoji: "🔭", papel: "Mercado, concorrência e ideias" },
+  { id: "copy-conteudo",    nome: "Copy & Conteúdo",  emoji: "✍️", papel: "Textos e landing pages" },
+];
+const NOMES = Object.fromEntries(TIME.map(a => [a.id, a.nome]));
+const ROTULO = { livre: "Livre", trabalhando: "Trabalhando", concluido: "Concluiu", aguardando: "Esperando você" };
+
+let buffer = [], eventos = [], aberto = null, ultimaLeitura = 0, falhas = 0;
+window.E = ev => buffer.push(ev);
+
+function nomeArquivo(p) { return (p || "").split(/[\\/]/).filter(Boolean).pop() || ""; }
+function hora(t) { return new Date(t).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }); }
+function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+function descrever(ev) {
+  const d = ev.det || "";
+  switch (ev.ev) {
+    case "UserPromptSubmit": return "📩 Recebeu seu pedido: " + (ev.msg || "");
+    case "SubagentStart":    return "▶️ Começou a trabalhar";
+    case "SubagentStop":     return "✅ Entregou o trabalho ao Gerente";
+    case "Stop":             return "📋 Respondeu para você";
+  }
+  switch (ev.tool) {
+    case "Agent": case "Task": {
+      const [quem, oque] = d.split("|");
+      return "➡️ Passou tarefa para " + (NOMES[quem] || quem || "um agente") + (oque ? ": " + oque : "");
+    }
+    case "Read": return "📖 Lendo " + nomeArquivo(d);
+    case "Write": return "📝 Criando " + nomeArquivo(d);
+    case "Edit": case "NotebookEdit": return "✏️ Editando " + nomeArquivo(d);
+    case "Bash": case "PowerShell": return "⚙️ " + (d || "Rodando um comando");
+    case "Glob": case "Grep": return "🔎 Procurando " + d;
+    case "WebSearch": return "🌐 Pesquisando: " + d;
+    case "WebFetch": return "🌐 Abrindo " + d;
+    case "Skill": return "📚 Consultando a skill " + d;
+    case "TaskCreate": return "🗂️ Nova tarefa: " + d;
+    case "TaskUpdate": case "TaskList": case "TaskGet": return "🗂️ Atualizando a lista de tarefas";
+    default: return "🛠️ Usando " + (ev.tool || "uma ferramenta") + (d ? ": " + d : "");
+  }
+}
+
+function montarEstado() {
+  // Remove duplicados (o mesmo evento pode chegar por mais de um hook)
+  const vistos = new Set(), lista = [];
+  for (const e of eventos) {
+    const chave = e.tid ? "t" + e.tid + e.ev : e.ev + "|" + e.ag + "|" + e.id + "|" + Math.floor(e.t / 1000);
+    if (vistos.has(chave)) continue;
+    vistos.add(chave); lista.push(e);
+  }
+  const est = {};
+  for (const a of TIME) est[a.id] = { status: "livre", acoes: [], ultimo: null, resultado: null, projeto: "", tarefas: 0 };
+  for (const e of lista) {
+    const a = est[e.ag]; if (!a) continue;
+    if (e.cwd) a.projeto = nomeArquivo(e.cwd);
+    if (e.ev === "SubagentStart") { a.status = "trabalhando"; a.tarefas++; }
+    else if (e.ev === "UserPromptSubmit") { a.status = "trabalhando"; a.tarefas++; }
+    else if (e.ev === "PreToolUse") a.status = "trabalhando";
+    else if (e.ev === "SubagentStop") { a.status = "concluido"; a.resultado = { t: e.t, msg: e.msg }; }
+    else if (e.ev === "Stop") { a.status = e.ag === "gerente" ? "aguardando" : "concluido"; a.resultado = { t: e.t, msg: e.msg }; }
+    a.ultimo = e; a.acoes.push(e);
+  }
+  // Se ficou mais de 15 minutos sem sinal, não mostra mais como "trabalhando"
+  for (const id in est) {
+    const a = est[id];
+    if (a.status === "trabalhando" && a.ultimo && Date.now() - a.ultimo.t > 15 * 60 * 1000) a.status = "livre";
+  }
+  return { est, total: lista.length };
+}
+
+function cartao(a, s) {
+  const agora = s.ultimo ? descrever(s.ultimo) : "Aguardando uma tarefa do Gerente";
+  const hist = s.acoes.slice(-6).reverse().map(e => `<li><span class="h">${hora(e.t)}</span><span class="d">${esc(descrever(e))}</span></li>`).join("");
+  return `<div class="card ${s.status}" onclick="abrir('${a.id}')">
+    <div class="cab">
+      <div class="avatar">${a.emoji}</div>
+      <div><div class="nome">${a.nome}</div><span class="status ${s.status}">${ROTULO[s.status]}</span></div>
+    </div>
+    <div class="papel-linha">${a.papel}</div>
+    <div class="agora"><span class="rot">${s.status === "trabalhando" ? "Fazendo agora" : "Última ação"}</span>${esc(agora)}
+      ${s.projeto ? `<div class="proj">📁 ${esc(s.projeto)}</div>` : ""}</div>
+    <ul class="hist">${hist || '<li><span class="d">Sem atividade ainda</span></li>'}</ul>
+    <div class="rodape"><span>${s.tarefas} tarefa(s)</span><span>clique para ver tudo →</span></div>
+  </div>`;
+}
+
+let estadoAtual = null;
+function desenhar() {
+  const { est, total } = montarEstado();
+  estadoAtual = est;
+  document.getElementById("vazio").hidden = total > 0;
+  document.getElementById("topo").innerHTML = cartao(TIME[0], est.gerente);
+  document.getElementById("grade").innerHTML = TIME.slice(1).map(a => cartao(a, est[a.id])).join("");
+  const ativos = TIME.filter(a => est[a.id].status === "trabalhando").length;
+  document.getElementById("resumo").textContent = ativos ? `${ativos} trabalhando agora` : "Time parado";
+  if (aberto) abrir(aberto, true);
+}
+
+function abrir(id, soAtualizar) {
+  const a = TIME.find(x => x.id === id), s = estadoAtual[id];
+  aberto = id;
+  document.getElementById("mcab").innerHTML = `<div class="avatar">${a.emoji}</div><div><div class="nome">${a.nome}</div><div class="papel">${a.papel}</div></div><span class="status ${s.status}" style="margin:0 0 0 16px">${ROTULO[s.status]}</span>`;
+  const linhas = s.acoes.slice(-300).reverse().map(e => `<tr><td class="h">${hora(e.t)}</td><td>${esc(descrever(e))}</td><td class="p">${esc(nomeArquivo(e.cwd))}</td></tr>`).join("");
+  const corpo = document.getElementById("mcorpo"), topo = corpo.scrollTop;
+  corpo.innerHTML =
+    (s.resultado ? `<h3>Última entrega (${hora(s.resultado.t)})</h3><div class="msg">${esc(s.resultado.msg || "(sem texto)")}</div>` : "") +
+    `<h3>Tudo o que fez (mais recente primeiro)</h3>` +
+    (linhas ? `<table>${linhas}</table>` : `<p style="color:var(--suave)">Ainda não trabalhou.</p>`);
+  if (soAtualizar) corpo.scrollTop = topo;
+  document.getElementById("modal").classList.add("aberto");
+}
+function fechar() { aberto = null; document.getElementById("modal").classList.remove("aberto"); }
+document.addEventListener("keydown", e => { if (e.key === "Escape") fechar(); });
+
+// Lê o arquivo de eventos a cada 2 segundos (funciona abrindo o HTML direto, sem servidor)
+function ler() {
+  buffer = [];
+  const s = document.createElement("script");
+  s.charset = "utf-8";
+  s.src = "eventos.js?t=" + Date.now();
+  s.onload = () => { eventos = buffer; falhas = 0; ultimaLeitura = Date.now(); s.remove(); desenhar(); };
+  s.onerror = () => { falhas++; s.remove(); if (!eventos.length) { eventos = []; desenhar(); } };
+  document.head.appendChild(s);
+}
+setInterval(() => {
+  const vivo = document.getElementById("vivo"), txt = document.getElementById("atualizado");
+  if (ultimaLeitura && falhas < 3) { vivo.classList.remove("off"); txt.textContent = "ao vivo"; }
+  else { vivo.classList.add("off"); txt.textContent = "aguardando o time"; }
+}, 1000);
+ler(); setInterval(ler, 2000);
+</script>
+</body>
+</html>

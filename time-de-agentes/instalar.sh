@@ -15,6 +15,10 @@ copiar() { # $1 = origem, $2 = destino
 for f in "$ORIGEM"/agents/*.md; do copiar "$f" "$DESTINO/agents/$(basename "$f")"; echo "  agente  ✔ $(basename "$f" .md)"; done
 for d in "$ORIGEM"/skills/*/;  do n="$(basename "$d")"; copiar "${d%/}" "$DESTINO/skills/$n"; echo "  skill   ✔ $n"; done
 
+mkdir -p "$DESTINO/painel"
+cp "$ORIGEM/painel/painel.html" "$ORIGEM/painel/registrar.sh" "$DESTINO/painel/"
+echo "  painel  ✔ abra $DESTINO/painel/painel.html no navegador"
+
 [ -d "$BACKUP" ] && echo -e "\nArquivos antigos com o mesmo nome foram salvos em: $BACKUP"
 cat <<MSG
 

@@ -7,6 +7,38 @@ skills:
   - task-coordination-strategies
   - requesting-code-review
   - verification-before-completion
+hooks:
+  UserPromptSubmit:
+    - hooks:
+        - type: command
+          command: bash "$HOME/.claude/painel/registrar.sh"
+          shell: bash
+          async: true
+  PreToolUse:
+    - matcher: "*"
+      hooks:
+        - type: command
+          command: bash "$HOME/.claude/painel/registrar.sh"
+          shell: bash
+          async: true
+  SubagentStart:
+    - hooks:
+        - type: command
+          command: bash "$HOME/.claude/painel/registrar.sh"
+          shell: bash
+          async: true
+  SubagentStop:
+    - hooks:
+        - type: command
+          command: bash "$HOME/.claude/painel/registrar.sh"
+          shell: bash
+          async: true
+  Stop:
+    - hooks:
+        - type: command
+          command: bash "$HOME/.claude/painel/registrar.sh"
+          shell: bash
+          async: true
 ---
 
 # Gerente

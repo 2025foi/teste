@@ -32,6 +32,19 @@ Você (dono)
 
 Os 5 especialistas recebem suas skills pré-carregadas (campo `skills:`). O Gerente, por rodar como sessão principal, chama as dele sob demanda.
 
+## 📺 Painel do Time (ver os agentes trabalhando)
+
+O instalador cria o atalho **"Painel do Time"** na Área de Trabalho (no Windows). Ele abre no navegador uma tela com **6 quadrados**, um por agente:
+
+- 👔 o Gerente em cima, e os 5 especialistas embaixo
+- o status de cada um (**Trabalhando**, **Concluiu**, **Livre**, **Esperando você**)
+- o que cada um está fazendo **agora** e as últimas ações
+- **clique num quadrado** para ver tudo o que aquele agente fez e a última entrega dele
+
+A tela se atualiza sozinha a cada 2 segundos. Deixe aberta ao lado do terminal enquanto o Gerente trabalha.
+
+Como funciona: o arquivo do Gerente tem "hooks" que anotam cada ação do time em `~/.claude/painel/eventos.js`, e o `painel.html` lê esse arquivo. No Windows é preciso ter o Git instalado (ele traz o Git Bash, que roda o anotador).
+
 ## Instalar (uma vez, no seu computador)
 
 Requisitos: [Claude Code](https://code.claude.com) atualizado (`claude update`) e Git.
