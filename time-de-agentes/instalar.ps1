@@ -13,8 +13,10 @@ foreach ($sub in "agents","skills") {
       Move-Item $alvo (Join-Path $bk $item.Name)
     }
     Copy-Item $item.FullName $alvo -Recurse
-    Write-Host "  $sub ✔ $($item.BaseName)"
+    Write-Host "  $sub OK $($item.BaseName)"
   }
 }
 if (Test-Path $Backup) { Write-Host "`nArquivos antigos foram salvos em: $Backup" }
-Write-Host "`nPronto! Entre na pasta de um projeto e rode:  claude --agent gerente"
+Write-Host "`nPronto! Time de 6 agentes instalado em $Destino"
+Write-Host "Requer Claude Code atualizado (rode: claude update)."
+Write-Host "Entre na pasta de um projeto e rode:  claude --agent gerente"

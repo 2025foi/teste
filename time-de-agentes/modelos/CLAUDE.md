@@ -1,13 +1,13 @@
 # [NOME DO PROJETO]
 
 > Copie este arquivo para a raiz de cada projeto e troque tudo o que está entre `[COLCHETES]`.
-> Os 5 agentes (Gerente, Arquiteto, Marketing Scout, Copy & Conteúdo e Revisor Técnico) leem este arquivo automaticamente.
+> Os 6 agentes (Gerente, Arquiteto, Programador, Marketing Scout, Copy & Conteúdo e Revisor Técnico) leem este arquivo automaticamente.
 > Apague as seções que não se aplicam. Quanto mais específico, melhor o trabalho do time.
 
 ## 1. Visão geral
 - **O que é:** [ex.: loja virtual de suplementos naturais / sistema de agendamento para clínicas]
 - **Tipo:** [site institucional | landing page | e-commerce | sistema web | app | API]
-- **Status:** [em criação | em produção | em reformulação]
+- **Tipo de trabalho:** [criação do zero | reformulação | adaptação de um sistema existente]
 - **Cliente / dono:** [nome do cliente ou "projeto próprio"]
 - **URL de produção:** [https://...]
 - **URL de homologação:** [https://... ou "não tem"]
@@ -68,7 +68,9 @@
 - **Decisões já tomadas:** [ex.: migrar para Next.js até março]
 
 ## 8. Time de agentes neste projeto
-Fluxo padrão: **Dono → Gerente → (Arquiteto | Marketing Scout | Copy & Conteúdo) → Revisor Técnico → Gerente aprova → Dono**.
-- Nada é considerado finalizado sem aprovação do **Gerente**.
-- Todo código passa pelo **Revisor Técnico** antes da aprovação.
+Fluxo padrão: **Dono → Gerente → Arquiteto (plano) → Programador (código) → Revisor Técnico → Gerente aprova → Dono**.
+Marketing Scout e Copy & Conteúdo entram quando o Gerente achar necessário e também passam pela aprovação dele.
+- O **Gerente** é o único contato com o dono, e nada é finalizado sem a aprovação dele.
+- O **Arquiteto** define a estrutura antes de qualquer construção nova; o plano fica em `docs/arquitetura/`.
+- Todo código do **Programador** passa pelo **Revisor Técnico**.
 - [Regras extras do time só para este projeto, se houver]

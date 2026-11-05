@@ -18,8 +18,9 @@ for d in "$ORIGEM"/skills/*/;  do n="$(basename "$d")"; copiar "${d%/}" "$DESTIN
 [ -d "$BACKUP" ] && echo -e "\nArquivos antigos com o mesmo nome foram salvos em: $BACKUP"
 cat <<MSG
 
-Pronto! Time instalado em $DESTINO
-Para trabalhar com o Gerente no comando, entre na pasta de um projeto e rode:
+Pronto! Time de 6 agentes instalado em $DESTINO
+Requer Claude Code atualizado (rode "claude update" se algo não funcionar).
+Para trabalhar com o Gerente, entre na pasta de um projeto e rode:
 
     claude --agent gerente
 
