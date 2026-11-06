@@ -32,20 +32,19 @@ Você (dono)
 
 Os 5 especialistas recebem suas skills pré-carregadas (campo `skills:`). O Gerente, por rodar como sessão principal, chama as dele sob demanda.
 
-## 📺 Painel do Time (ver os agentes trabalhando)
+## 📺 Painel do Time (ver o time e conversar com ele)
 
 ![Painel do Time](painel-exemplo.png)
 
-O instalador cria o atalho **"Painel do Time"** na Área de Trabalho (no Windows). Ele abre no navegador uma tela com **6 quadrados**, um por agente:
+O instalador cria o atalho **"Painel do Time"** na Área de Trabalho. Ele liga um pequeno servidor no seu computador (uma janela minimizada, que deve ficar aberta) e abre o painel no navegador em `http://localhost:4747`:
 
-- 👔 o Gerente em cima, e os 5 especialistas embaixo
-- o status de cada um (**Trabalhando**, **Concluiu**, **Livre**, **Esperando você**)
-- o que cada um está fazendo **agora** e as últimas ações
-- **clique num quadrado** para ver tudo o que aquele agente fez e a última entrega dele
+- **Projetos (esquerda):** suas pastas em `C:\Users\<você>\Projetos`. Dá para criar um projeto novo (**+ Novo**), trazer um do GitHub ou do Lovable (**⬇ Do GitHub**), abrir o site (**🌐 Ver site**) ou a pasta (**📂 Abrir pasta**).
+- **Time (centro):** 6 quadrados, um por agente, com status, o que está fazendo agora e as últimas ações. Clique num quadrado para ver tudo o que ele fez.
+- **Chat (direita):** converse com o **Gerente** sobre o projeto selecionado, como no terminal. Pelo seletor, dá para falar direto com outro agente; nesse caso o trabalho não passa pela aprovação do Gerente.
 
-A tela se atualiza sozinha a cada 2 segundos. Deixe aberta ao lado do terminal enquanto o Gerente trabalha.
+Cada projeto guarda a própria conversa, então no dia seguinte basta clicar no projeto e continuar. No chat, o Claude trabalha no **modo automático**: faz sozinho o que é de baixo risco e bloqueia ações arriscadas.
 
-Como funciona: o arquivo do Gerente tem "hooks" que anotam cada ação do time em `~/.claude/painel/eventos.js`, e o `painel.html` lê esse arquivo. No Windows é preciso ter o Git instalado (ele traz o Git Bash, que roda o anotador).
+**Requisitos:** Git (para os registros do painel) e [Node.js LTS](https://nodejs.org) (para o chat e os projetos). Sem o Node.js, o atalho abre o painel só para visualização.
 
 ## Instalar (uma vez, no seu computador)
 

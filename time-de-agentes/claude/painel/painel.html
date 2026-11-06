@@ -11,6 +11,7 @@
     --azul: #5aa9ff; --cinza: #5b6474;
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body { margin: 0; background: var(--fundo); color: var(--texto);
          font: 15px/1.45 "Segoe UI", system-ui, -apple-system, sans-serif; }
   header { display: flex; align-items: center; justify-content: space-between;
@@ -20,7 +21,57 @@
   .vivo { display: inline-flex; align-items: center; gap: 7px; }
   .vivo i { width: 8px; height: 8px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 0 0 rgba(61,220,132,.6); animation: pulso 2s infinite; }
   .vivo.off i { background: var(--cinza); animation: none; }
-  main { padding: 24px 28px 40px; max-width: 1500px; margin: 0 auto; }
+  main { padding: 24px 28px 40px; max-width: 1500px; margin: 0 auto; width: 100%; }
+  .layout { display: block; }
+  body.servidor .layout { display: grid; grid-template-columns: 250px minmax(0, 1fr) 440px; height: calc(100vh - 67px); }
+  body.servidor main { overflow: auto; padding: 20px 22px 30px; }
+  body.servidor .grade { grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); }
+  aside { display: none; }
+  body.servidor aside { display: flex; flex-direction: column; min-height: 0; background: #12161d; }
+  /* Projetos */
+  #projetos { border-right: 1px solid var(--borda); padding: 16px 12px; gap: 10px; overflow: auto; }
+  .titulo-lat { font-size: 12px; text-transform: uppercase; letter-spacing: .7px; color: var(--suave); margin: 4px 6px 2px; }
+  .proj-item { padding: 10px 12px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; display: flex; align-items: center; gap: 8px; }
+  .proj-item:hover { background: var(--cartao); }
+  .proj-item.sel { background: var(--cartao2); border-color: #3b465c; }
+  .proj-item .pn { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+  .proj-item .ponto { width: 8px; height: 8px; border-radius: 50%; background: var(--verde); animation: pisca 1s infinite; flex: none; }
+  .btn { background: #232a37; color: var(--texto); border: 1px solid var(--borda); border-radius: 9px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13.5px; }
+  .btn:hover { border-color: #3b465c; }
+  .btn.prim { background: #2c6e49; border-color: #2c6e49; }
+  .btn.prim:hover { background: #33805a; }
+  .btn.perigo { background: #4a2328; border-color: #6a2d34; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .acoes-proj { display: flex; gap: 6px; flex-wrap: wrap; padding: 4px 6px; }
+  .acoes-proj .btn { flex: 1; padding: 6px 8px; font-size: 12.5px; }
+  .filtro { font-size: 12.5px; color: var(--suave); display: flex; gap: 6px; align-items: center; padding: 0 6px; }
+  .rodape-lat { margin-top: auto; font-size: 11.5px; color: #6b7588; padding: 6px; word-break: break-all; }
+  /* Chat */
+  #chat { border-left: 1px solid var(--borda); }
+  .chat-cab { padding: 12px 14px; border-bottom: 1px solid var(--borda); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .chat-cab select { background: var(--cartao2); color: var(--texto); border: 1px solid var(--borda); border-radius: 9px; padding: 7px 8px; font: inherit; font-size: 14px; }
+  .chat-cab .esp { flex: 1; }
+  .chat-aviso { font-size: 12px; color: var(--amarelo); padding: 6px 14px; border-bottom: 1px solid var(--borda); background: rgba(245,196,81,.05); }
+  #msgs { flex: 1; overflow: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .bolha { max-width: 92%; padding: 9px 12px; border-radius: 12px; white-space: pre-wrap; word-wrap: break-word; font-size: 14px; }
+  .bolha.voce { align-self: flex-end; background: #234a36; border-bottom-right-radius: 4px; }
+  .bolha.agente { align-self: flex-start; background: var(--cartao2); border-bottom-left-radius: 4px; }
+  .bolha.agente .quem { font-size: 11.5px; color: var(--suave); margin-bottom: 3px; display: block; }
+  .bolha pre { background: #0f1218; padding: 8px; border-radius: 8px; overflow: auto; white-space: pre; margin: 6px 0; }
+  .ativ { font-size: 12.5px; color: var(--suave); padding: 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .erro { align-self: stretch; background: rgba(220,80,80,.12); color: #ff9b9b; padding: 9px 12px; border-radius: 10px; font-size: 13.5px; white-space: pre-wrap; }
+  .sist { align-self: center; color: var(--suave); font-size: 12.5px; }
+  .digitando { font-size: 13px; color: var(--verde); padding: 4px 6px; }
+  .chat-pe { border-top: 1px solid var(--borda); padding: 12px; display: flex; gap: 8px; align-items: flex-end; }
+  .chat-pe textarea { flex: 1; resize: none; min-height: 44px; max-height: 180px; background: var(--cartao2); color: var(--texto); border: 1px solid var(--borda);
+                      border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 14px; }
+  .chat-vazio { margin: auto; text-align: center; color: var(--suave); font-size: 14px; padding: 20px; }
+  .so-arquivo { background: rgba(90,169,255,.08); border: 1px solid rgba(90,169,255,.3); color: #b9d8ff; padding: 10px 14px; border-radius: 10px; margin-bottom: 18px; font-size: 13.5px; }
+  body.servidor .so-arquivo { display: none; }
+  @media (max-width: 1250px) {
+    body.servidor .layout { grid-template-columns: 220px minmax(0, 1fr); height: auto; }
+    body.servidor #chat { grid-column: 1 / -1; height: 75vh; border-left: 0; border-top: 1px solid var(--borda); }
+  }
   .topo { display: flex; justify-content: center; margin-bottom: 14px; }
   .topo .card { width: min(560px, 100%); }
   .ligacao { height: 22px; margin: 0 auto 14px; width: 2px; background: var(--borda); }
@@ -79,20 +130,52 @@
   </div>
 </header>
 
+<div class="layout">
+<aside id="projetos">
+  <div class="titulo-lat">📁 Projetos</div>
+  <div id="lista-proj"></div>
+  <div class="acoes-proj">
+    <button class="btn" onclick="novoProjeto()">+ Novo</button>
+    <button class="btn" onclick="trazerGithub()">⬇ Do GitHub</button>
+  </div>
+  <div id="sel-acoes" class="acoes-proj" hidden>
+    <button class="btn" onclick="abrirNoPc('site')">🌐 Ver site</button>
+    <button class="btn" onclick="abrirNoPc('pasta')">📂 Abrir pasta</button>
+  </div>
+  <label class="filtro" id="filtro-l" hidden><input type="checkbox" id="filtro" checked onchange="desenhar()"> Mostrar só este projeto no painel</label>
+  <div class="rodape-lat" id="pasta-proj"></div>
+</aside>
 <main>
+  <div class="so-arquivo">💡 Para conversar com o time e escolher projetos aqui, abra o painel pelo atalho <b>Painel do Time</b> da Área de Trabalho.</div>
   <div class="vazio" id="vazio" hidden>
     <b>Nenhuma atividade ainda.</b><br><br>
-    Abra o PowerShell na pasta de um projeto, rode <code>claude --agent gerente</code> e faça um pedido.<br>
+    <span id="vazio-txt">Abra o PowerShell na pasta de um projeto, rode <code>claude</code> e faça um pedido.</span><br>
     Os cartões abaixo se atualizam sozinhos enquanto o time trabalha.
   </div>
   <div class="topo" id="topo"></div>
   <div class="ligacao"></div>
   <div class="grade" id="grade"></div>
 </main>
+<aside id="chat">
+  <div class="chat-cab">
+    <span>💬</span>
+    <select id="para" onchange="trocarAgente(this.value)"></select>
+    <span class="esp"></span>
+    <button class="btn perigo" id="b-parar" onclick="pararAgente()" hidden>⏹ Parar</button>
+    <button class="btn" onclick="limparConversa()" title="Começar uma conversa nova">🧹 Nova</button>
+  </div>
+  <div class="chat-aviso" id="aviso-direto" hidden>Conversa direta: este trabalho <b>não</b> passa pela aprovação do Gerente.</div>
+  <div id="msgs"><div class="chat-vazio">Escolha um projeto à esquerda para começar.</div></div>
+  <div class="chat-pe">
+    <textarea id="entrada" rows="1" placeholder="Escolha um projeto primeiro" disabled></textarea>
+    <button class="btn prim" id="b-enviar" onclick="enviarMsg()" disabled>Enviar</button>
+  </div>
+</aside>
+</div>
 
 <div class="modal" id="modal" onclick="if(event.target===this)fechar()">
   <div class="caixa">
-    <header><div class="cab" id="mcab" style="flex:1"></div><button class="fechar" onclick="fechar()">Fechar</button></header>
+    <header><div class="cab" id="mcab" style="flex:1"></div><button class="btn prim" id="m-conversar" onclick="conversarCom(aberto)" hidden style="margin-right:8px">💬 Conversar</button><button class="fechar" onclick="fechar()">Fechar</button></header>
     <div class="corpo" id="mcorpo"></div>
   </div>
 </div>
@@ -149,7 +232,9 @@ function descrever(ev) {
 function montarEstado() {
   // Remove duplicados (o mesmo evento pode chegar por mais de um hook)
   const vistos = new Set(), lista = [];
+  const base = filtroAtivo();
   for (const e of eventos) {
+    if (base && !normal(e.cwd).startsWith(base)) continue;
     const chave = e.tid ? "t" + e.tid + e.ev : e.ev + "|" + e.ag + "|" + e.id + "|" + Math.floor(e.t / 1000);
     if (vistos.has(chave)) continue;
     vistos.add(chave); lista.push(e);
@@ -215,6 +300,9 @@ function abrir(id, soAtualizar) {
     `<h3>Tudo o que fez (mais recente primeiro)</h3>` +
     (linhas ? `<table>${linhas}</table>` : `<p style="color:var(--suave)">Ainda não trabalhou.</p>`);
   if (soAtualizar) corpo.scrollTop = topo;
+  const bc = document.getElementById("m-conversar");
+  bc.hidden = !SERVIDOR || !projetoSel;
+  bc.textContent = "💬 Conversar com " + a.nome;
   document.getElementById("modal").classList.add("aberto");
 }
 function fechar() { aberto = null; document.getElementById("modal").classList.remove("aberto"); }
@@ -236,6 +324,149 @@ setInterval(() => {
   else { vivo.classList.add("off"); txt.textContent = "aguardando o time"; }
 }, 1000);
 ler(); setInterval(ler, 2000);
+
+// ================= Modo servidor: projetos + conversa =================
+const SERVIDOR = !!window.PAINEL_TOKEN;
+let projetos = [], pastaProjetos = "", projetoSel = localStorage.getItem("painel.projeto") || "", agenteSel = "gerente";
+let ultimoN = 0, rodando = false, enviando = false, chaveConversa = "";
+
+function normal(p) { return String(p || "").replace(/\\/g, "/").replace(/\/+$/, "").toLowerCase(); }
+function filtroAtivo() {
+  if (!SERVIDOR || !projetoSel || !document.getElementById("filtro").checked) return "";
+  const p = projetos.find(x => x.nome === projetoSel);
+  return p ? normal(p.caminho) : "";
+}
+
+async function api(caminho, corpo) {
+  const r = await fetch(caminho, corpo === undefined
+    ? { headers: { "x-painel": window.PAINEL_TOKEN } }
+    : { method: "POST", headers: { "x-painel": window.PAINEL_TOKEN, "Content-Type": "application/json" }, body: JSON.stringify(corpo) });
+  return r.json();
+}
+
+async function carregarProjetos() {
+  try {
+    const d = await api("/api/projetos");
+    projetos = d.projetos; pastaProjetos = d.pasta;
+    if (projetoSel && !projetos.some(p => p.nome === projetoSel)) selecionarProjeto("");
+    desenharProjetos();
+  } catch { }
+}
+function desenharProjetos() {
+  const el = document.getElementById("lista-proj");
+  el.innerHTML = projetos.length ? projetos.map(p =>
+    `<div class="proj-item ${p.nome === projetoSel ? "sel" : ""}" onclick='selecionarProjeto(${JSON.stringify(p.nome)})' title="${esc(p.caminho)}">
+       <span>${p.temGit ? "🔗" : "📁"}</span><span class="pn">${esc(p.nome)}</span>${p.ocupado ? '<span class="ponto" title="Time trabalhando"></span>' : ""}
+     </div>`).join("")
+    : '<div class="sist" style="padding:8px">Nenhum projeto ainda. Clique em <b>+ Novo</b> ou traga um do GitHub.</div>';
+  document.getElementById("pasta-proj").textContent = "Pasta: " + pastaProjetos;
+  document.getElementById("sel-acoes").hidden = !projetoSel;
+  document.getElementById("filtro-l").hidden = !projetoSel;
+}
+function selecionarProjeto(nome) {
+  projetoSel = nome; localStorage.setItem("painel.projeto", nome);
+  desenharProjetos(); reiniciarConversa(); desenhar();
+}
+async function novoProjeto() {
+  const nome = prompt("Nome do novo projeto (ex.: site-pizzaria):");
+  if (!nome) return;
+  const r = await api("/api/novo-projeto", { nome: nome.trim() });
+  if (r.erro) return alert(r.erro);
+  await carregarProjetos(); selecionarProjeto(r.nome);
+}
+async function trazerGithub() {
+  const url = prompt("Cole o endereço do projeto no GitHub (ex.: https://github.com/usuario/meu-site):");
+  if (!url) return;
+  document.body.style.cursor = "progress";
+  const r = await api("/api/clonar", { url });
+  document.body.style.cursor = "";
+  if (r.erro) return alert(r.erro);
+  await carregarProjetos(); selecionarProjeto(r.nome);
+}
+async function abrirNoPc(oque) {
+  const r = await api("/api/abrir", { projeto: projetoSel, oque });
+  if (r.erro) alert(r.erro);
+}
+
+// ----- conversa -----
+function trocarAgente(a) { agenteSel = a; reiniciarConversa(); }
+function conversarCom(id) { fechar(); agenteSel = id; document.getElementById("para").value = id; reiniciarConversa(); document.getElementById("entrada").focus(); }
+function reiniciarConversa() {
+  ultimoN = 0; rodando = false; chaveConversa = projetoSel + "|" + agenteSel;
+  const ok = !!projetoSel;
+  document.getElementById("msgs").innerHTML = ok ? "" : '<div class="chat-vazio">Escolha um projeto à esquerda para começar.</div>';
+  const ent = document.getElementById("entrada");
+  ent.disabled = !ok; document.getElementById("b-enviar").disabled = !ok;
+  const nome = NOMES[agenteSel];
+  ent.placeholder = ok ? `Escreva para o ${nome}… (Enter envia)` : "Escolha um projeto primeiro";
+  document.getElementById("aviso-direto").hidden = agenteSel === "gerente";
+  if (ok) buscarMensagens(true);
+}
+function formatar(txt) {
+  let h = esc(txt);
+  h = h.replace(/```[\w-]*\n?([\s\S]*?)```/g, (_, c) => `<pre>${c}</pre>`);
+  h = h.replace(/`([^`\n]+)`/g, "<code>$1</code>");
+  h = h.replace(/\*\*([^*\n]+)\*\*/g, "<b>$1</b>");
+  return h;
+}
+function htmlMsg(m) {
+  switch (m.de) {
+    case "voce": return `<div class="bolha voce">${esc(m.texto)}</div>`;
+    case "agente": { const a = TIME.find(x => x.id === m.agente) || TIME[0];
+      return `<div class="bolha agente"><span class="quem">${a.emoji} ${a.nome} · ${hora(m.t)}</span>${formatar(m.texto)}</div>`; }
+    case "atividade": return `<div class="ativ" title="${esc(m.texto)}">${esc(m.texto)}</div>`;
+    case "erro": return `<div class="erro">⚠️ ${esc(m.texto)}</div>`;
+    case "sistema": return `<div class="sist">${esc(m.texto)}</div>`;
+    default: return "";
+  }
+}
+async function buscarMensagens(primeira) {
+  if (!SERVIDOR || !projetoSel) return;
+  const minhaChave = chaveConversa;
+  let d;
+  try { d = await api(`/api/conversa?projeto=${encodeURIComponent(projetoSel)}&agente=${agenteSel}&desde=${ultimoN}`); } catch { return; }
+  if (minhaChave !== chaveConversa || d.erro) return;
+  const box = document.getElementById("msgs");
+  const noFim = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
+  document.getElementById("digitando")?.remove();
+  if (primeira && !d.msgs.length) box.innerHTML = `<div class="chat-vazio">Nenhuma conversa ainda neste projeto.<br>Escreva abaixo o que você quer que o ${NOMES[agenteSel]} faça.</div>`;
+  if (d.msgs.length) { box.querySelector(".chat-vazio")?.remove(); box.insertAdjacentHTML("beforeend", d.msgs.map(htmlMsg).join("")); ultimoN = d.msgs[d.msgs.length - 1].n; }
+  rodando = d.rodando;
+  if (rodando) box.insertAdjacentHTML("beforeend", `<div class="digitando" id="digitando">● ${NOMES[agenteSel]} está trabalhando…</div>`);
+  document.getElementById("b-parar").hidden = !rodando;
+  document.getElementById("b-enviar").disabled = rodando || enviando || !projetoSel;
+  if (noFim || primeira || d.msgs.length) box.scrollTop = box.scrollHeight;
+}
+async function enviarMsg() {
+  const ent = document.getElementById("entrada"), texto = ent.value.trim();
+  if (!texto || !projetoSel || rodando || enviando) return;
+  enviando = true; document.getElementById("b-enviar").disabled = true;
+  const r = await api("/api/enviar", { projeto: projetoSel, agente: agenteSel, texto });
+  enviando = false;
+  if (r.erro) { alert(r.erro); document.getElementById("b-enviar").disabled = false; return; }
+  ent.value = ""; ent.style.height = "";
+  buscarMensagens();
+}
+async function pararAgente() { await api("/api/parar", { projeto: projetoSel, agente: agenteSel }); }
+async function limparConversa() {
+  if (!projetoSel) return;
+  if (!confirm(`Começar uma conversa nova com o ${NOMES[agenteSel]} neste projeto? O histórico desta conversa será apagado (os arquivos do projeto não).`)) return;
+  const r = await api("/api/limpar-conversa", { projeto: projetoSel, agente: agenteSel });
+  if (r.erro) return alert(r.erro);
+  reiniciarConversa();
+}
+
+if (SERVIDOR) {
+  document.body.classList.add("servidor");
+  document.getElementById("vazio-txt").innerHTML = "Escolha um projeto à esquerda e escreva para o Gerente no chat à direita.";
+  document.getElementById("para").innerHTML = TIME.map(a => `<option value="${a.id}">${a.emoji} ${a.nome}</option>`).join("");
+  const ent = document.getElementById("entrada");
+  ent.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); enviarMsg(); } });
+  ent.addEventListener("input", () => { ent.style.height = "auto"; ent.style.height = Math.min(ent.scrollHeight, 180) + "px"; });
+  carregarProjetos().then(() => { reiniciarConversa(); desenhar(); });
+  setInterval(carregarProjetos, 5000);
+  setInterval(() => buscarMensagens(), 1200);
+}
 </script>
 </body>
 </html>

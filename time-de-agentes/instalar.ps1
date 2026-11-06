@@ -16,17 +16,29 @@ foreach ($sub in "agents","skills") {
     Write-Host "  $sub OK $($item.BaseName)"
   }
 }
-# Painel do Time (mostra os 6 agentes trabalhando, ao vivo, no navegador)
+# Painel do Time (mostra os 6 agentes ao vivo e permite conversar com eles pelo navegador)
 $PainelDest = Join-Path $Destino "painel"
 New-Item -ItemType Directory -Force -Path $PainelDest | Out-Null
-foreach ($arq in "painel.html","registrar.sh") {
+foreach ($arq in "painel.html","registrar.sh","servidor.js","Abrir Painel.cmd") {
   Copy-Item (Join-Path (Join-Path $Origem "painel") $arq) (Join-Path $PainelDest $arq) -Force
 }
-$PainelHtml = Join-Path $PainelDest "painel.html"
-$Url = "file:///" + (($PainelHtml -replace "\\","/") -replace " ","%20")
-$Atalho = Join-Path ([Environment]::GetFolderPath("Desktop")) "Painel do Time.url"
-Set-Content -Path $Atalho -Value "[InternetShortcut]`r`nURL=$Url" -Encoding ASCII
+New-Item -ItemType Directory -Force -Path (Join-Path $HOME "Projetos") | Out-Null
+$Desk = [Environment]::GetFolderPath("Desktop")
+$Antigo = Join-Path $Desk "Painel do Time.url"
+if (Test-Path $Antigo) { Remove-Item $Antigo -Force }
+$Ws = New-Object -ComObject WScript.Shell
+$Lnk = $Ws.CreateShortcut((Join-Path $Desk "Painel do Time.lnk"))
+$Lnk.TargetPath = Join-Path $PainelDest "Abrir Painel.cmd"
+$Lnk.WorkingDirectory = $PainelDest
+$Lnk.WindowStyle = 7
+$Lnk.Description = "Abre o Painel do Time (conversar com o Gerente e ver os agentes)"
+$Lnk.Save()
 Write-Host "  painel OK  (atalho 'Painel do Time' criado na Area de Trabalho)"
+if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+  Write-Host ""
+  Write-Host "  ATENCAO: o Node.js nao esta instalado. Sem ele o painel so mostra os agentes,"
+  Write-Host "  sem o chat e sem a lista de projetos. Instale a versao LTS em https://nodejs.org"
+}
 
 if (Test-Path $Backup) { Write-Host "`nArquivos antigos foram salvos em: $Backup" }
 Write-Host "`nPronto! Time de 6 agentes instalado em $Destino"
